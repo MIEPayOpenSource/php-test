@@ -111,3 +111,17 @@ $app->post('/todo/manage', function (Request $request) use ($app) {
     }
     return $app->redirect('/todo');
 });
+
+$app->get('/todo/{id}/json', function ($id) use ($app) {
+    if (null === $user = $app['session']->get('user')) {
+        return $app->redirect('/login');
+    }
+    if ( $id ){
+        $sql = "SELECT * FROM todos WHERE id = '$id'";
+        $todo = $app['db']->fetchAssoc($sql);
+        return $app['twig']->render('todo_json.html', [
+            'todo_json' => json_encode($todo,JSON_PRETTY_PRINT),
+        ]);
+    }
+})
+->value('id', null);
