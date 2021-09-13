@@ -90,3 +90,24 @@ $app->match('/todo/delete/{id}', function ($id) use ($app) {
 
     return $app->redirect('/todo');
 });
+
+$app->post('/todo/manage', function (Request $request) use ($app) {
+    $id = $request->get('id');
+    $submit = $request->get('submit');
+
+    if( isset($id) && $id!='' && isset($submit) && $submit!=''){
+        switch ($submit) {
+            case 'Completed':
+                $sql = "UPDATE todos SET status = 'Pending' WHERE id = '$id'";
+                $app['db']->executeUpdate($sql);
+            break;
+            case 'Pending':
+                $sql = "UPDATE todos SET status = 'Completed' WHERE id = '$id'";
+                $app['db']->executeUpdate($sql);
+            break;
+            default:
+            break;
+        }
+    }
+    return $app->redirect('/todo');
+});
