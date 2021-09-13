@@ -59,6 +59,8 @@ $app->get('/todo/{id}', function ($id) use ($app) {
 
         return $app['twig']->render('todos.html', [
             'todos' => $todos,
+            'error' => $app['session']->getFlashBag()->get('error', []),
+            'success' => $app['session']->getFlashBag()->get('success', []),
         ]);
     }
 })
@@ -84,10 +86,13 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 
 
 $app->match('/todo/delete/{id}', function ($id) use ($app) {
-
-    $sql = "DELETE FROM todos WHERE id = '$id'";
-    $app['db']->executeUpdate($sql);
-
+    if( $id ){
+        $sql = "DELETE FROM todos WHERE id = '$id'";
+        $app['db']->executeUpdate($sql);
+        $app['session']->getFlashBag()->add('success', 'Todo delete successfully!');
+    } else {
+        $app['session']->getFlashBag()->add('error', 'Something went wrong!');
+    }
     return $app->redirect('/todo');
 });
 
@@ -100,14 +105,18 @@ $app->post('/todo/manage', function (Request $request) use ($app) {
             case 'Completed':
                 $sql = "UPDATE todos SET status = 'Pending' WHERE id = '$id'";
                 $app['db']->executeUpdate($sql);
+                $app['session']->getFlashBag()->add('success', 'Todo update successfully!');
             break;
             case 'Pending':
                 $sql = "UPDATE todos SET status = 'Completed' WHERE id = '$id'";
                 $app['db']->executeUpdate($sql);
+                $app['session']->getFlashBag()->add('success', 'Todo update successfully!');
             break;
             default:
             break;
         }
+    } else {
+        $app['session']->getFlashBag()->add('error', 'Something went wrong!');
     }
     return $app->redirect('/todo');
 });
