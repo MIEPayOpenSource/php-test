@@ -12,9 +12,6 @@ Credentials:
 * username: **user1**
 * password: **user1**
 
-#### Homepage:
-![Homepage](/web/img/homepage.png?raw=true "Homepage")
-
 #### Login page:
 ![Login page](/web/img/login-page.png?raw=true "Login page")
 
