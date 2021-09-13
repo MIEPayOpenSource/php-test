@@ -4,7 +4,7 @@
 <div class="col-md-4 col-md-offset-4">
     <h1>Todo List:</h1>
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th></th>
+        <th>#</th><th>User</th><th>Description</th><th>Status</th><th></th>
         {% for todo in todos %}
             <tr>
                 <td>{{ todo.id }}</td>
@@ -14,16 +14,28 @@
                        {{ todo.description }}
                     </a>
                 </td>
+                <td>{{ todo.status }}</td>
                 <td>
-                    <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
-                        <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
-                    </form>
+                    <div class="todo_action">
+                        <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
+                            <button type="submit" name="submit" value="Delete" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
+                        </form>
+                        <form method="post" action="{{ app.request.baseurl }}/todo/manage">
+                            <input type="hidden" name="id" value="{{ todo.id }}">
+                            {% if todo.status =='Pending' %}
+                                <button type="submit" name="submit" value="Pending" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-check glyphicon-white"></span></button>
+                            {% else %}
+                                <button type="submit" name="submit" value="Completed" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-unchecked glyphicon-white"></span></button>
+                            {% endif %}
+                            <a class="btn btn-info btn-xs" href="{{ app.request.baseurl }}/todo/{{ todo.id }}/json"><span class="glyphicon glyphicon-list-alt glyphicon-white"></span></a>
+                        </form>
+                    </div>
                 </td>
             </tr>
         {% endfor %}
         <tr>
             <form method="post" action="{{ app.request.baseurl }}/todo/add">
-                <td colspan="3">
+                <td colspan="4">
                     <input type="textbox" name="description" class="small-6 small-center" placeholder="Description...">
                 </td>
                 <td>
