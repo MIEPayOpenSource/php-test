@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="col-md-6 col-md-offset-3">
+    <h1>Todo JSON:</h1>
+    <table class="table table-striped">
+        <th>#</th>
+        <tr>
+            <td><pre>{{ todo_json }}</pre></td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}
