@@ -2,6 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     $twig->addGlobal('user', $app['session']->get('user'));
@@ -79,6 +80,10 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 
     $sql = "INSERT INTO todos (user_id, description) VALUES ('$user_id', '$description')";
     $app['db']->executeUpdate($sql);
+
+    $session = new Session();
+    $session->start();
+    $session->getFlashBag()->add('success', 'Todo added!');
 
     return $app->redirect('/todo');
 });
