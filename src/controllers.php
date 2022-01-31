@@ -16,6 +16,10 @@ $app->get('/', function () use ($app) {
     ]);
 });
 
+$app->get('/not-found', function () use ($app) {
+    return $app['twig']->render('not-found.html');
+});
+
 
 $app->match('/login', function (Request $request) use ($app) {
     $username = $request->get('username');
@@ -86,4 +90,26 @@ $app->match('/todo/delete/{id}', function ($id) use ($app) {
     $app['db']->executeUpdate($sql);
 
     return $app->redirect('/todo');
+});
+
+$app->get('/todo/{id}/json', function($id) use ($app){
+    if (null === $user = $app['session']->get('user')) {
+        return $app->redirect('/login');
+    }
+
+    if (!$id)
+        return $app->redirect('/not-found');
+
+    $sql = "SELECT * FROM todos WHERE id = '$id'";
+    $todo = $app['db']->fetchAssoc($sql);
+
+    if (!$todo)
+        return $app->redirect('/not-found');
+
+    $todo_json = json_encode($todo);
+
+    return $app['twig']->render('todo-json.html', [
+        'todo_json' => $todo_json,
+    ]);
+
 });
